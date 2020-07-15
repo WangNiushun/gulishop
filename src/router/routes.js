@@ -17,6 +17,7 @@ export default [
       isHide:true
     }
   },
+
   {
     path: '/register',
     component: Register,
@@ -26,15 +27,14 @@ export default [
     }
   },
   {
-    path: '/search/:keyword?',   // ? 的含意是 params 参数可传可不传
+    path: '/search/:keyword?',   // ? 的含意是 params 参数可传可不传,?必须写,否则会由bug
     component: Search,
     name:'search',
-     // 路由传递props数据
-    props: route =>({
-      keyword:route.params.keyword,
-      keyword1:route.query.keyword,
-    })
-   
+     // 路由传递props数据,测试使用
+    // props: route =>({
+    //   keyword:route.params.keyword,
+    //   keyword1:route.query.keyword,
+    // })
   },
 
   // 重定向路由

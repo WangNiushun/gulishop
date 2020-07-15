@@ -111,8 +111,21 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
-  name: "ListContainer"
+  name: "ListContainer",
+  mounted(){
+    this.getReqBannerList()
+  },
+  methods:{
+    getReqBannerList(){
+      this.$store.dispatch('getReqBannerList')
+    }
+  },
+  computed:{
+    ...mapState
+  }
 };
 </script>
 

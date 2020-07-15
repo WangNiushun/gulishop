@@ -6,12 +6,14 @@ import { reqCategoryList } from '@/api'
 const state = {
   // 请求回来数据的存放地
   categoryList: [],
+
 }
 const mutations = {
   // 直接修改数据
   RECEIVECATEGORYLIST(state, categoryList) {
     state.categoryList = categoryList
-  }
+  },
+
 }
 const actions = {
   // 异步请求
@@ -31,9 +33,8 @@ const actions = {
       // 成功，我们就提交
       commit('RECEIVECATEGORYLIST', result.data)
     }
+  },
 
-
-  }
 
 }
 

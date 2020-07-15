@@ -8,16 +8,26 @@
 </template>
 
 <script>
-import Header from "@/components/Header";  //
+import Header from "@/components/Header"; //
 import Footer from "@/components/Footer";
-import {reqCategoryList} from '@/api'
+import { reqCategoryList } from "@/api";
 export default {
   name: "App",
   components: {
     Header,
-    Footer,
+    Footer
   },
 
+  mounted() {
+    // 挂载成功后，开始执行发送请求函数获取数据，但是一般不会在这里直接写 dispatch,我们一般在methods 中
+  
+    this.getCategoryList();
+  },
+  methods: {
+    getCategoryList() {
+      this.$store.dispatch("getCategoryList");
+    }
+  }
   // 测试接口函数能否能够使用
   // mounted(){
   //   reqCategoryList()

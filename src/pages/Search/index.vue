@@ -1,18 +1,15 @@
 <template>
   <div>
-    Search<br>
-    params参数:{{keyword}} --- query参数: {{keyword1}}
-    
-    </div> 
+    <typeNav></typeNav>
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'Search',
-  props:['keyword','keyword1']
-}
+  name: "Search",
+  // props: ["keyword", "keyword1"]   测试
+};
 </script>
 
 <style lang="less" scoped>
-
 </style>

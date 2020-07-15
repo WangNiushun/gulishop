@@ -47,7 +47,6 @@
 </template>
 
 <script>
-
 export default {
   name: "Header",
   data() {
@@ -60,17 +59,35 @@ export default {
       // this.$router.push('search/')
       // this.$router.push(`search/${this.keyword}?keyword=${this.keyword.toUpperCase()}`)  // 传参,字符串方式
       // 它返回的是一个promise对象
-      
-      this.$router.push({
-        // path: "/search",
-        name:'search',
-        params:{
-          keyword: this.keyword || undefined    // params参数传空串会出现问题，所以传递时，我们都要加 undefined，传入undefined就没事
-        },
-        query: {
-          keyword: this.keyword.toUpperCase()
-        },
-      }).catch(()=>{}); // 用来解决多次点击push的报错问题
+
+      // this.$router.push({
+      //   // path: "/search",
+      //   name:'search',
+      //   params:{
+      //     keyword: this.keyword || undefined    // params参数传空串会出现问题，所以传递时，我们都要加 undefined，传入undefined就没事
+      //   },
+      //   query: {
+      //     keyword: this.keyword.toUpperCase()
+      //   },
+      // }).catch(()=>{}); // 用来解决多次点击push的报错问题
+
+      // 以上都是测试
+
+      let location = {
+        name: "search",
+        params: {
+          //如果传递params参数是一个空串，那么路径会有问题，传过去如果是undefined就没事
+          keyword: this.keyword || undefined
+        }
+      };
+
+      //点击搜索按钮的时候，我们不能只关注params参数，应该去看看原来有没有query参数
+      //如果有就应该把query参数也带上
+      let { query } = this.$route;
+      if (query) {
+        location.query = query;
+      }
+      this.$router.push(location);
     }
   }
 };
