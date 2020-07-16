@@ -4,58 +4,60 @@
       <!-- 注意这里要再外部添加一个div,给它添加moveOut事件 -->
       <div @mouseleave="moveOut" @mouseenter="isShow=true">
         <h2 class="all">全部商品分类</h2>
-        <div class="sort" v-show="isShow">
-          <!-- 使用事件委派提高处理事件的效率 -->
-          <div class="all-sort-list2" @click="toSearch">
-            <div
-              class="item"
-              v-for="(c1,index) in categoryList"
-              :key="c1.categoryId"
-              @mouseenter="moveIn(index)"
-              :class="{item_on:currentIndex === index}"
-            >
-              <h3>
-                <!-- 声明式导航:不适用于这里,因为实例化出来的组件对象太多了,会导致页面卡顿,因此我们使用编程时导航去跳转 -->
-                <!-- <router-link :to="{name:'search',query:{categoryName:c1.categoryName,category1Id:c1.categoryId}}">{{c1.categoryName}}</router-link> -->
-                <!-- 使用了编程时导航,但是效率还是不高,因为每个类别都添加了相同的点击事件,每个点击事件都有自己的回调函数 
+        <transition name="show">
+          <div class="sort" v-show="isShow">
+            <!-- 使用事件委派提高处理事件的效率 -->
+            <div class="all-sort-list2" @click="toSearch">
+              <div
+                class="item"
+                v-for="(c1,index) in categoryList"
+                :key="c1.categoryId"
+                @mouseenter="moveIn(index)"
+                :class="{item_on:currentIndex === index}"
+              >
+                <h3>
+                  <!-- 声明式导航:不适用于这里,因为实例化出来的组件对象太多了,会导致页面卡顿,因此我们使用编程时导航去跳转 -->
+                  <!-- <router-link :to="{name:'search',query:{categoryName:c1.categoryName,category1Id:c1.categoryId}}">{{c1.categoryName}}</router-link> -->
+                  <!-- 使用了编程时导航,但是效率还是不高,因为每个类别都添加了相同的点击事件,每个点击事件都有自己的回调函数 
                       为了更加提高效率,我们这里使用事件委派
-                -->
-                <!-- <a href="javascript:;" @click="$router.push({name:'search',query:{categoryName:c1.categoryName,category1Id:c1.categoryId}})">{{c1.categoryName}}</a> -->
-                <a
-                  href="javascript:;"
-                  :data-category1Id="c1.categoryId"
-                  :data-categoryName="c1.categoryName"
-                >{{c1.categoryName}}</a>
-              </h3>
-              <div class="item-list clearfix">
-                <div class="subitem">
-                  <dl class="fore" v-for="(c2) in c1.categoryChild" :key="c2.categoryId">
-                    <dt>
-                      <!-- <router-link :to="{name:'search',query:{categoryName:c2.categoryName,category2Id:c2.categoryId}}">{{c2.categoryName}}</router-link> -->
-                      <!-- <a href="javascript:;" @click="$router.push({name:'search',query:{categoryName:c2.categoryName,category2Id:c2.categoryId}})">{{c2.categoryName}}</a> -->
-                      <a
-                        href="javascript:;"
-                        :data-category2Id="c2.categoryId"
-                        :data-categoryName="c2.categoryName"
-                      >{{c2.categoryName}}</a>
-                    </dt>
-                    <dd v-for="(c3) in c2.categoryChild" :key="c3.categoryId">
-                      <em>
-                        <!-- <router-link :to="{name:'search',query:{categoryName:c3.categoryName,category3Id:c3.categoryId}}">{{c3.categoryName}}</router-link> -->
-                        <!-- <a href="javascript:;" @click="$router.push({name:'search',query:{categoryName:c3.categoryName,category3Id:c3.categoryId}})">{{c3.categoryName}}</a> -->
+                  -->
+                  <!-- <a href="javascript:;" @click="$router.push({name:'search',query:{categoryName:c1.categoryName,category1Id:c1.categoryId}})">{{c1.categoryName}}</a> -->
+                  <a
+                    href="javascript:;"
+                    :data-category1Id="c1.categoryId"
+                    :data-categoryName="c1.categoryName"
+                  >{{c1.categoryName}}</a>
+                </h3>
+                <div class="item-list clearfix">
+                  <div class="subitem">
+                    <dl class="fore" v-for="(c2) in c1.categoryChild" :key="c2.categoryId">
+                      <dt>
+                        <!-- <router-link :to="{name:'search',query:{categoryName:c2.categoryName,category2Id:c2.categoryId}}">{{c2.categoryName}}</router-link> -->
+                        <!-- <a href="javascript:;" @click="$router.push({name:'search',query:{categoryName:c2.categoryName,category2Id:c2.categoryId}})">{{c2.categoryName}}</a> -->
                         <a
                           href="javascript:;"
-                          :data-category3Id="c3.categoryId"
-                          :data-categoryName="c3.categoryName"
-                        >{{c3.categoryName}}</a>
-                      </em>
-                    </dd>
-                  </dl>
+                          :data-category2Id="c2.categoryId"
+                          :data-categoryName="c2.categoryName"
+                        >{{c2.categoryName}}</a>
+                      </dt>
+                      <dd v-for="(c3) in c2.categoryChild" :key="c3.categoryId">
+                        <em>
+                          <!-- <router-link :to="{name:'search',query:{categoryName:c3.categoryName,category3Id:c3.categoryId}}">{{c3.categoryName}}</router-link> -->
+                          <!-- <a href="javascript:;" @click="$router.push({name:'search',query:{categoryName:c3.categoryName,category3Id:c3.categoryId}})">{{c3.categoryName}}</a> -->
+                          <a
+                            href="javascript:;"
+                            :data-category3Id="c3.categoryId"
+                            :data-categoryName="c3.categoryName"
+                          >{{c3.categoryName}}</a>
+                        </em>
+                      </dd>
+                    </dl>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </transition>
       </div>
       <nav class="nav">
         <a href="###">服装城</a>
@@ -85,12 +87,13 @@ export default {
     return {
       // 设计一个数据,控制导航的calss是否有效
       currentIndex: -1,
-      isShow:true,
+      // 设计数据，控制显示一级分类
+      isShow: true
     };
   },
-  mounted(){
-    if(this.$route.path !=='/home'){
-      this.isShow = false
+  mounted() {
+    if (this.$route.path !== "/home") {
+      this.isShow = false;
     }
   },
 
@@ -118,10 +121,10 @@ export default {
 
     //鼠标移出隐藏23级
     moveOut() {
-      this.currentIndex = -1
+      this.currentIndex = -1;
       // 判断当前路径,移出一级分类是否显示
-      if(this.$route.path !=='/home'){
-        this.isShow = false
+      if (this.$route.path !== "/home") {
+        this.isShow = false;
       }
     },
 
@@ -188,6 +191,7 @@ export default {
     })
   }
 };
+
 </script>
 
 <style lang="less" scoped>
@@ -200,6 +204,18 @@ export default {
     display: flex;
     position: relative;
 
+    .show-enter{
+      height: 0;
+      opacity: 0;
+    }
+    .show-enter-to{
+      height: 461px;
+      opacity: 1;
+    }
+    .show-enter-active{
+      transition: all 1s;
+    }
+    
     .all {
       width: 210px;
       height: 45px;
@@ -226,7 +242,7 @@ export default {
       left: 0;
       top: 45px;
       width: 210px;
-      height: 461px;
+      // height: 461px;
       position: absolute;
       background: #fafafa;
       z-index: 999;

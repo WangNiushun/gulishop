@@ -7,7 +7,7 @@ module.exports = {
   devServer: {
     // contentBase: "./dist",
     open: true, // ,浏览器自动打开
-    quiet:true, 
+    quiet:true,
     // hot: true,
     port: 8080, // 端口
 

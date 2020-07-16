@@ -6,6 +6,7 @@
 import axios from 'axios'
 // 引入第三方进度条 的包,记得下载
 import NProgress from 'nprogress'
+
 import 'nprogress/nprogress.css'
 
 const service = axios.create({
@@ -33,7 +34,8 @@ service.interceptors.response.use(
     alert("请求出错"+error.message || '未知错误')
     // 以后不允许 用户继续处理： 中断promise链
     return new Promise(()=>{})  // 返回pending状态的promise，中断promise链,不会再往后传
-    // 以后允许用户继续对错误进行处理
+    
+    // 若想以后允许用户继续对错误进行处理
     // return Promise.reject(error)
   }
 )

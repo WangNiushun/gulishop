@@ -1,5 +1,4 @@
 <template>
-  <!--商标-->
   <div class="brand">
     <div class="py-container">
       <ul class="brand-list">

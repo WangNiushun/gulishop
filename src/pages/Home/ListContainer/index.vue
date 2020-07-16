@@ -3,29 +3,21 @@
   <div class="list-container">
     <div class="sortList clearfix">
       <div class="center">
-        <!--banner轮播-->
-        <div class="swiper-container" id="mySwiper">
+        <!-- banner轮播 -->
+        <SliderLoop :bannerList="bannerList"></SliderLoop>
+         <!-- <div class="swiper-container" id="mySwiper" ref="banner">
           <div class="swiper-wrapper">
-            <div class="swiper-slide">
-              <img src="./imgages/banner1.jpg" />
+            <div class="swiper-slide" v-for="(banner) in bannerList" :key="banner.id">
+              <img :src="banner.imgUrl" />
             </div>
-            <!-- <div class="swiper-slide">
-              <img src="./imgages/banner2.jpg" />
-            </div>
-            <div class="swiper-slide">
-              <img src="./imgages/banner3.jpg" />
-            </div>
-            <div class="swiper-slide">
-              <img src="./imgages/banner4.jpg" />
-            </div> -->
-          </div>
+          </div> -->
           <!-- 如果需要分页器 -->
-          <div class="swiper-pagination"></div>
+          <!-- <div class="swiper-pagination"></div> -->
 
           <!-- 如果需要导航按钮 -->
-          <div class="swiper-button-prev"></div>
-          <div class="swiper-button-next"></div>
-        </div>
+          <!-- <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div> -->
+        <!-- </div>  -->
       </div>
       <div class="right">
         <div class="news">
@@ -103,7 +95,7 @@
           </li>
         </ul>
         <div class="ads">
-          <img src="./imgages/ad1.png" />
+          <img src="./images/ad1.png" />
         </div>
       </div>
     </div>
@@ -111,22 +103,55 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from "vuex";
+// 要想使用swiper, 引入 js 和 css
+// import Swiper from "swiper";
+// import "swiper/css/swiper.min.css";
 
 export default {
   name: "ListContainer",
-  mounted(){
-    this.getReqBannerList()
+  mounted() {
+    this.getBannerList();
+
+    // 页面
+    // new Swiper("this.$refs.banner", {
+    //   // direction: "vertical", // 垂直切换选项
+    //   loop: true, // 循环模式选项
+
+    //   // 如果需要分页器
+    //   pagination: {
+    //     el: ".swiper-pagination"
+    //   },
+
+    //   // 如果需要前进后退按钮
+    //   navigation: {
+    //     nextEl: ".swiper-button-next",
+    //     prevEl: ".swiper-button-prev"
+    //   },
+    // });
   },
-  methods:{
-    getReqBannerList(){
-      this.$store.dispatch('getReqBannerList')
+
+  methods: {
+    getBannerList() {
+      this.$store.dispatch("getBannerList");
     }
   },
-  computed:{
-    ...mapState
-  }
-};
+  computed: {
+    // 三种获取到vuex的state下的home中的数据
+    // (1)state比较特殊,vuex模块化时, 不能直接使用数组的形式映射, 应该使用对象的形式
+    // ...mapState({
+    //   BannerList: state => state.home.bannerList
+    // })
+    // (2), 注意在store下的home.js 中 getters中先计算, 可以使用数组直接映射
+    // ...mapGetters(['bannerList'])
+
+    // (3)函数获取,根据vuex的state下的home中的数据计算的来的
+    bannerList() {
+      return this.$store.state.home.bannerList;
+    }
+  },
+
+}
 </script>
 
 <style lang="less" scoped>
@@ -200,7 +225,7 @@ export default {
           width: 25%;
 
           .list-item {
-            background-image: url(./imgages/icons.png);
+            background-image: url(./images/icons.png);
             width: 61px;
             height: 40px;
             display: block;
