@@ -135,7 +135,7 @@ export default {
       // let ele = event.target
       // let data = ele.dataset   //  拿到元素身上所有的自定义属性组成的一个对象
       let data = event.target.dataset; // 简写:  拿到元素身上所有的自定义属性组成的一个对象
-      console.log(data);
+      // console.log(data);
 
       //  从data中解构赋值: 注意是小写,因为data 中的自定义属性名都是小写
       let { categoryname, category1id, category2id, category3id } = data;

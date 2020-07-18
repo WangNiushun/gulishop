@@ -3,19 +3,33 @@ import VueRouter from 'vue-router'
 import routes from '@/router/routes'
 Vue.use(VueRouter)
 
-// // 先把原来的方法存起来
-// const originPush=VueRouter.prototype.push
-// const originReplace=VueRouter.prototype.replace
+// 终极解决多次触发push或者repalce,报错的问题
+// vue-router.esm.js?8c4f:2062 Uncaught (in promise) Error: Avoided redundant navigation to current location
+const originPush = VueRouter.prototype.push
+const originReplace = VueRouter.prototype.replace
 
-// // location 是它返回的对象
-// VueRouter.prototype.push = function(location,onResolved,onRejected){
-//   if(onResolved === undefined && onRejected === undefined){
-//     //  originPush.call 目的是让VueRouter实例化对象去调用
-//     return originPush.call(this,location).catch(()=>{})
-//   }else{
-//     return originPush.call(this,location,onResolved,onRejected)
-//   }
-// }
-export default  new VueRouter({
- routes
+VueRouter.prototype.push = function (location, onResolved, onRejected) {
+  if (onResolved === undefined && onRejected === undefined) {
+    // originPush.call目的是让VueRouter实例化对象去调用‘
+    //如果不加，那就是window在调用
+    return originPush.call(this, location).catch(() => { })
+  } else {
+    return originPush.call(this, location, onResolved, onRejected)
+  }
+}
+
+VueRouter.prototype.replace = function (location, onResolved, onRejected) {
+  if (onResolved === undefined && onRejected === undefined) {
+    // originPush.call目的是让VueRouter实例化对象去调用‘
+    //如果不加，那就是window在调用
+    return originReplace.call(this, location).catch(() => { })
+  } else {
+    return originReplace.call(this, location, onResolved, onRejected)
+  }
+}
+
+
+
+export default new VueRouter({
+  routes
 })

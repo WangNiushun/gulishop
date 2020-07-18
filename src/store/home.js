@@ -5,7 +5,7 @@ import { reqCategoryList,reqBannerList,reqFloorList } from '@/api'
 
 const state = {
   // 请求回来数据的存放地
-  categoryList: [],   // 这里定义是数组还是对象,要根据请求回来的真是数据决定 
+  categoryList: [],   // 这里定义是数组还是对象,要根据请求回来的真实数据决定 
   bannerList:[],
   floorList:[]
 }

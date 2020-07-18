@@ -10,10 +10,10 @@ import SliderLoop from '@/components/SliderLoop'
 
 // 为了测试接口请求函数, 引入部分暴露所有方法的集合,就要必须这么引入
 // import * as API from '@/api'
-// console.log(1)
+// API.reqGoodsList({})
 // API.reqBannerList()
 // API.reqFloorList()
-// console.log(2)
+
 
 
 

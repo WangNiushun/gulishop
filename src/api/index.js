@@ -3,7 +3,10 @@
 
 import Ajax from '@/ajax/Ajax'
 import mockAjax from '@/ajax/mockAjax'
-// 请求获取三类分级列表接口
+
+
+
+// (1) 请求获取三类分级列表接口
 //  get   /api/product/getBaseCategoryList   参数： 无
 
 // const reqCategoryList = () => Ajax.get('/api/product/getBaseCategoryList')  
@@ -17,8 +20,11 @@ export const reqCategoryList = () => Ajax({
 // 记得第一次返回的错误,是404,因为跨域,所以要解决跨域问题,配置代理服务器
 
 
-// 使用mock的模拟接口, 去请求banner 数据    get请求    /banner  
-// 使用对象的方法发送请求,上面的是函数的方式
+
+
+
+//  (2) 使用mock的模拟接口, 去请求banner 数据    get请求    /banner  
+//   使用对象的方法发送请求,上面的是函数的方式
 export const reqBannerList = () => mockAjax.get('/banner')
 export const reqFloorList = () => mockAjax.get('/floor')
 
@@ -27,3 +33,11 @@ export const reqFloorList = () => mockAjax.get('/floor')
 // console.log(1)
 // console.log(reqBannerList)   // 这个函数的返回值是一个 promise对象
 // console.log(1)
+
+
+
+//   (3)  请求 search的商品搜索列表数据
+//     post     /api/list    data       
+//     data 如果是空的对象代表没有搜索条件,会返回所有的商品信息
+
+export const reqGoodsList = (searchParams) => Ajax.post('/list',searchParams)

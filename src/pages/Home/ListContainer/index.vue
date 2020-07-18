@@ -147,7 +147,7 @@ export default {
 
     // (3)函数获取,根据vuex的state下的home中的数据计算的来的
     bannerList() {
-      return this.$store.state.home.bannerList;
+      return this.$store.state.home.bannerList
     }
   },
 
