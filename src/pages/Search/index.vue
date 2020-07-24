@@ -1,6 +1,6 @@
 <template>
   <div>
-    <TypeNav/>
+    <TypeNav />
     <div class="main">
       <div class="py-container">
         <!--bread 面包屑-->
@@ -10,33 +10,51 @@
               <a href="#">全部结果</a>
             </li>
           </ul>
+          <!-- 面包屑 -->
           <ul class="fl sui-tag">
-            <li class="with-x">手机</li>
-            <li class="with-x">
-              iphone
-              <i>×</i>
+            <!-- 显示点击分类过来,显示searchParams参数中的categoryName,商品名称 -->
+            <li class="with-x" v-if="searchParams.categoryName">
+              {{searchParams.categoryName}}
+              <i @click="removeCategoryName">×</i>
             </li>
-            <li class="with-x">
-              华为
-              <i>×</i>
+            <!-- 点击搜索过来,显示searchParams参数中的关键字keyword -->
+            <li class="with-x" v-if="searchParams.keyword">
+              {{searchParams.keyword}}
+              <i @click="removeKeyword">×</i>
             </li>
-            <li class="with-x">
-              OPPO
-              <i>×</i>
+            <!-- 点击品牌过来,显示searchParams参数中的trademark -->
+            <li class="with-x" v-if="searchParams.trademark">
+              <!-- split,字符串的方法以 : 分割, 这里我们只需要的品牌的名字 -->
+              {{searchParams.trademark.split(':')[1]}}
+              <i @click="removeTrademark">×</i>
+            </li>
+
+            <!-- 点击属性过来,修改searchParams参数中的props参数,因为是数组可以存在多个,这里我们要遍历 -->
+            <li class="with-x" v-for="(prop, index) in searchParams.props" :key="index">
+              {{prop.split(':')[1]}}
+              <i @click="removeProp(index)">×</i>
             </li>
           </ul>
         </div>
 
-        <!--selector 选择平台组件-->
-        <SearchSelector/>
+        <!--selector 选择属性平台组件-->
+        <SearchSelector @searchForTrademark="searchForTrademark" @searchForAttr="searchForAttr" />
 
         <!--details-->
         <div class="details clearfix">
+          <!-- 排序区域 -->
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li :class="{active:searchParams.order.split(':')[0] === '1'}">
+                  <a href="#">
+                    综合
+                    <i
+                      class="iconfont"
+                      :class="{['icon-up']:searchParams.order.split(':')[1] === 'asc',['icon-up1']:searchParams.order.split(':')[1]==='desc'}"
+                      v-if="searchParams.order.split(':')[0] === '1'"
+                    ></i>
+                  </a>
                 </li>
                 <li>
                   <a href="#">销量</a>
@@ -47,38 +65,46 @@
                 <li>
                   <a href="#">评价</a>
                 </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
+                <li :class="{active:searchParams.order.split(':')[0] === '2'}">
+                  <a href="#">
+                    价格
+                    <i
+                      class="iconfont"
+                      :class="{['icon-up']:searchParams.order.split(':')[1] === 'asc',['icon-up1']:searchParams.order.split(':')[1] === 'desc'}"
+                      v-if="searchParams.order.split(':')[0] === '1' "
+                    ></i>
+                  </a>
                 </li>
               </ul>
             </div>
           </div>
+          <!-- 中间商品区域 -->
           <div class="goods-list">
             <ul class="yui3-g">
               <li class="yui3-u-1-5" v-for="(goods) in goodsList" :key="goods.id">
                 <div class="list-wrap">
                   <div class="p-img">
-                    <a href="item.html" target="_blank">
+                    <!-- 详情页路由组件 -->
+                    <router-link :to="`/detail/${goods.id}`">
                       <img :src="goods.defaultImg" />
-                    </a>
+                    </router-link>
+                    <!-- <a href="item.html" target="_blank">
+                      <img :src="goods.defaultImg" />
+                    </a>-->
                   </div>
                   <div class="price">
                     <strong>
-                      <em>¥ </em>
+                      <em>¥</em>
                       <i>{{goods.price}}</i>
                     </strong>
                   </div>
                   <div class="attr">
-                    <a
+                    <router-link :to="`/detail/${goods.id}`">{{goods.title}}</router-link>
+                    <!-- <a
                       target="_blank"
                       href="item.html"
                       title="促销信息，下单即赠送三个月CIBN视频会员卡！【小米电视新品4A 58 火爆预约中】"
-                    >
-                      {{goods.title}}
-                    </a>
+                    >{{goods.title}}</a>-->
                   </div>
                   <div class="commit">
                     <i class="command">
@@ -88,9 +114,9 @@
                   </div>
                   <div class="operate">
                     <a
-                      href="success-cart.html"
-                      target="_blank"
+                      href="javascript:;"
                       class="sui-btn btn-bordered btn-danger"
+                      
                     >加入购物车</a>
                     <a href="javascript:void(0);" class="sui-btn btn-bordered">收藏</a>
                   </div>
@@ -98,6 +124,7 @@
               </li>
             </ul>
           </div>
+          <!-- 分页器 -->
           <div class="fr page">
             <div class="sui-pagination clearfix">
               <ul>
@@ -139,7 +166,7 @@
 
 <script>
 import SearchSelector from "./SearchSelector/SearchSelector";
-import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 export default {
   name: "Search",
   data() {
@@ -156,48 +183,136 @@ export default {
         pageNo: 1,
         pageSize: 10,
         props: [],
-        trademark: ""
-      }
+        trademark: "",
+      },
     };
   },
-  beforeMount(){
-    // 去同步更新 data中的数据
-    // 从路由中获取对应的params 和query 参数
-    let {keyword} =this.$route.params
-    let {categoryName,category1Id,category2Id,category3Id} = this.$route.query
-
-    // 2.获取的参数不一定存在,所以我们要对参数进行处理,需要判定, 但是我们这次不判定,直接全部放在一个新的对象中
-    let searchParams = {
-      // data中 searchParams 数据的拆包, 拆包对象其实也是浅拷贝
-      ...this.searchParams,
-      // 在对象中,添加相同的属性,后面的会把前面的覆盖,我们就能保证我们拿到的是最新的 data 数据
-      keyword,
-      categoryName,
-      category1Id,
-      category2Id,
-      category3Id,
-    }
-
-
+  beforeMount() {
+    // 一般我们在挂载之前 去同步更新 data中的数据
+    // 这里处理参数的过程,在methods中封装成了一个函数
+    this.handlerSearchParams();
   },
   mounted() {
-    this.getGoodsListInfo()
+    // mounted 中去发送异步请求
+    this.getGoodsListInfo();
   },
 
   methods: {
+    // 分发dispatch,调用vuex内部action中的函数,发送ajax请求
     getGoodsListInfo(searchParams) {
-      this.$store.dispatch("getGoodsListInfo",this.searchParams)
-    }
+      this.$store.dispatch("getGoodsListInfo", this.searchParams);
+    },
+
+    // 处理参数的函数
+    handlerSearchParams() {
+      // 1.从路由中获取对应的params 和query 参数
+      let { keyword } = this.$route.params;
+      let {
+        categoryName,
+        category1Id,
+        category2Id,
+        category3Id,
+      } = this.$route.query;
+
+      // 2.获取的参数不一定存在,所以我们要对参数进行处理,需要判定, 但是我们这次不判定,直接全部放在一个新的对象中
+      let searchParams = {
+        // data中 searchParams 数据的拆包, ...拆包对象是浅拷贝
+        ...this.searchParams,
+        // 在对象中,添加相同的属性,后面的会把前面的覆盖,我们就能保证我们拿到的是最新的 数据
+        keyword,
+        categoryName,
+        category1Id,
+        category2Id,
+        category3Id,
+      };
+
+      // 3.过滤这个对象中没有数据的属性项
+      // Object.keys(对象) ，   遍历对象内部所有的属性并获取所有的属性形成一个新的数组
+      Object.keys(searchParams).forEach((item) => {
+        // searchParams,是对象，  item代表它内部的每一项属性，这里使用中括号语法
+        // 如果这个属性为空，为了发送请求的时候，不占用带宽，就删除它
+        // 所以我们要在前面加一个 ! 非,  属性为真,不处理, 属性为假(就是没有),就进入删除这个属性
+        if (!searchParams[item]) {
+          delete searchParams[item];
+        }
+      });
+
+      this.searchParams = searchParams; // 用收集好的searchParams替换掉原来的初始化搜索参数
+    },
+
+    // 点击x , 删除面包屑的类名 categoryNamed
+    removeCategoryName() {
+      // 将参数内部的categoryName,清空 ;   // 然后再次发送请求
+      this.searchParams.categoryName = "";
+      // this.getGoodsListInfo()
+      // BUG: 点击x后, 删除面包屑中的类别名称, 但是路径中的类别名称还在
+      // 解决: 不能在这里直接发送请求, 因为这样路由是不变化的
+      // 我们应该让路由去变化, 然后wath会监视到,然后发请求
+      this.$router.replace({ name: "search", params: this.$route.params });
+    },
+
+    // 点击x,  删除面包屑的关键字  keyword
+    removeKeyword() {
+      this.searchParams.keyword = "";
+      this.$bus.$emit("clearKeyword");
+      // this.getGoodsListInfo()
+      // 同理
+      this.$router.replace({ name: "search", query: this.$route.query });
+    },
+
+    // 自定义事件的回调函数: 子向父传递数据
+    // 处理子中 点击品牌, 传过来的参数,修改父中 searchParams中对应的参数,然后发送请求
+    searchForTrademark(trademark) {
+      // 注意参数格式的要求: 模板字符串拼接   品牌: "ID:品牌名称"
+      this.searchParams.trademark = `${trademark.tmId}:${trademark.tmName}`;
+      this.getGoodsListInfo();
+    },
+
+    // 点击x, 删除面包屑的品牌  trademark
+    removeTrademark() {
+      this.searchParams.trademark = "";
+      this.getGoodsListInfo();
+    },
+
+    // 自定义事件的回调函数:根据属性显示
+    // 处理子中 点击属性, 传过来的参数,修改父中 searchParams中对应的参数,然后发送请求
+    searchForAttr(attr, attrValue) {
+      // 注意参数格式的要求: 模板字符串拼接
+      // 商品属性的数组: ["属性ID:属性值:属性名"]
+      // 示例: ["2:6.0～6.24英寸:屏幕尺寸"]
+      this.searchParams.props.push(
+        `${attr.attrId}:${attrValue}:${attr.attrName}`
+      );
+      this.getGoodsListInfo();
+    },
+
+    // 点击x, 删除面包屑的属性 这个要传入下标
+    removeProp(index) {
+      this.searchParams.props.splice(index, 1);
+      this.getGoodsListInfo();
+    },
+
+    // 点击加入购物车,发送请求,如果返回成功,跳转到添加购物车成功的页面
+
   },
 
-  computed:{
-    ...mapGetters(['goodsList'])
+  computed: {
+    ...mapGetters(["goodsList"]),
   },
 
+  watch: {
+    $route() {
+      // 还是要去准备参数再次发送请求, 而这里的准备参数和beforMount内部是一模一样的
+      // 所以我们要把处理参数的过程封装为一个公共的函数,优化的代码,这个函数在 methods中定义
+      this.handlerSearchParams();
+      // 需要再次发送请求,获取新的参数搜索的数据
+      this.getGoodsListInfo();
+    },
+  },
   components: {
-    SearchSelector
-  }
-}
+    SearchSelector,
+  },
+};
 </script>
 
 <style lang="less" scoped>
@@ -311,7 +426,8 @@ export default {
 
               &.active {
                 a {
-                  background: #e1251b;
+                  // background: #e1251b;
+                  background: green;
                   color: #fff;
                 }
               }

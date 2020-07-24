@@ -32,7 +32,7 @@ const actions = {
 const getters = {
   // 通过这里计算属性, 就可以listContaniner轮播组件中使用 ...mapGetters(['bannerList']) 简便映射获取到数据
   goodsList(state){
-    // 为了不想让报错, 可以 再后面再写个 空数组, 其实只个值肯定是能拿到的,但是有一丢丢时间差,可能会报错
+    // 为了不想让报错,防止拿到的数据是undefined,     可以 在"  或 "后面再写个 空数组, 其实只个值肯定是能拿到的,但是有一丢丢时间差,可能会报错
     return state.goodsListInfo.goodsList || []
   },
   attrsList(state){

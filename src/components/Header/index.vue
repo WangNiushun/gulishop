@@ -6,7 +6,15 @@
       <div class="container">
         <div class="loginList">
           <p>尚品汇欢迎您！</p>
-          <p>
+          <!-- 判断用户是否时登录状态，如果时，显示这个p -->
+          <p v-if="userInfo.name">
+            <!-- <a href="###">登录</a> -->
+            <a href="javascript:;">{{userInfo.name}}</a>
+            <!-- <a href="###" class="register">免费注册</a> -->
+            <a href="javascript:;" class="register" @click="logout">退出登录</a>
+          </p>
+          <!-- 如果用户不是登录状态，显示这个p -->
+          <p v-else>
             <span>请</span>
             <!-- <a href="###">登录</a> -->
             <router-link to="/login">登录</router-link>
@@ -16,7 +24,8 @@
         </div>
         <div class="typeList">
           <a href="###">我的订单</a>
-          <a href="###">我的购物车</a>
+          <!-- <a href="###">我的购物车</a> -->
+          <router-link to="/shopcart">我的购物车</router-link>
           <a href="###">我的尚品汇</a>
           <a href="###">尚品汇会员</a>
           <a href="###">企业采购</a>
@@ -29,6 +38,7 @@
     <!--头部第二行 搜索区域-->
     <div class="bottom">
       <h1 class="logoArea">
+        <!-- 声明式导航 -->
         <router-link to="/home" class="logo" title="尚品汇">
           <img src="./images/logo.png" alt />
         </router-link>
@@ -47,6 +57,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 export default {
   name: "Header",
   data() {
@@ -54,7 +65,11 @@ export default {
       keyword: ""
     };
   },
+  mounted(){
+    this.$bus.$on('clearKeyword',this.clearKeyword)
+  },
   methods: {
+    // 点击搜索, 收集搜索参数
     toSearch() {
       // this.$router.push('search/')
       // this.$router.push(`search/${this.keyword}?keyword=${this.keyword.toUpperCase()}`)  // 传参,字符串方式
@@ -69,7 +84,7 @@ export default {
       //   query: {
       //     keyword: this.keyword.toUpperCase()
       //   },
-      // }).catch(()=>{}); // 用来解决多次点击push的报错问题
+      // }).catch(()=>{}); // 用来解决多次点击push的报错问题 一劳永逸的解决办法在router下的index 中
 
       // 以上都是测试
 
@@ -87,8 +102,41 @@ export default {
       if (query) {
         location.query = query;
       }
-      this.$router.push(location);
+
+      // 这里跳转的时候要判断,是从首页到search页还是在search内部跳转
+      if(this.$route.path !== '/home'){
+         this.$router.replace(location)
+      }else{
+         this.$router.push(location)
+      }
+     
+    },
+
+    // 全局事件总线的回调函数,search中已触发,这边就执行
+    clearKeyword(){
+      this.keyword = ''
+    },
+
+
+    // 退出登录
+    async logout(){
+      try {
+         await this.$store.dispatch('userLogout')
+         alert('退出成功')
+         this.$router.push('/home')
+      } catch (error) {
+        // 这个函数返回的promise一定是成功的
+        alert(error)
+      }
+     
     }
+  },
+
+  computed:{
+    // 从用户的state 中获取用户的信息
+    ...mapState({
+      userInfo:state => state.user.userInfo
+    })
   }
 };
 </script>

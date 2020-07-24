@@ -31,5 +31,9 @@ VueRouter.prototype.replace = function (location, onResolved, onRejected) {
 
 
 export default new VueRouter({
-  routes
+  routes,
+  // 配置这个,解决: 对于所有路由导航，点击跳转后,简单地让页面滚动到顶部。
+  scrollBehavior(to, from, savedPosition) {
+    return { x: 0, y: 0 }
+  }
 })

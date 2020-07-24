@@ -18,7 +18,7 @@ export default {
     Footer
   },
 
-  mounted() {
+   created() {
     // 挂载成功后，开始执行发送请求函数获取数据，但是一般不会在这里直接写 dispatch,我们一般在methods 中
   
     this.getCategoryList();

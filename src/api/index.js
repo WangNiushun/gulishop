@@ -3,6 +3,7 @@
 
 import Ajax from '@/ajax/Ajax'
 import mockAjax from '@/ajax/mockAjax'
+import user from '@/store/user'
 
 
 
@@ -41,3 +42,37 @@ export const reqFloorList = () => mockAjax.get('/floor')
 //     data 如果是空的对象代表没有搜索条件,会返回所有的商品信息
 
 export const reqGoodsList = (searchParams) => Ajax.post('/list',searchParams)
+
+//   (4)  请求商品详情数据
+//   /api/item/{ skuId }     get      参数: skuId 是商品的id,发送请求的时候,必须要传递这个参数,这是个params参数
+
+export const reqGoodsDetailInfo = (skuId) => Ajax.get(`item/${skuId}`)
+
+
+//   (5)  请求添加或更新购物车    post    /api/cart/addToCart/{ skuId }/{ skuNum }, 两个参数分别是 商品id   和商品的数量
+
+export const reqAddorUpdateShopCart = (skuId,skuNum) => Ajax.post(`/cart/addToCart/${ skuId }/${ skuNum }`)
+
+//    (6)  请求购物车列表数据    get    /api/cart/cartList
+
+export const reqShopCartList = () => Ajax.get('/cart/cartList') 
+ 
+//    ( 7 ) 请求切换购物车中单个商品选中状态   GET    /api/cart/checkCart/{skuID}/{isChecked}
+export const reqUpdateIsChecked = (skuID,isChecked) => Ajax.get(`/cart/checkCart/${skuID}/${isChecked}`)
+
+//    ( 8 )  请求删除单个购物车商品  /api/cart/deleteCart/{skuId}   delete
+export const reqDeleteCart = (skuId) => Ajax.delete(`/cart/deleteCart/${skuId}`)
+
+
+//     ( 9 ) 请求注册  POST    /api/user/passport/register  ,userInfo是请求体(data)参数,
+
+export const reqRegister = (userInfo) => Ajax.post('/user/passport/register',userInfo)
+
+
+//    ( 10 ) 请求登录  post     /api/user/passport/login  ， 参数两个，是请求体参数
+
+export const reqLogin = (userInfo) =>Ajax.post('/user/passport/login',userInfo)
+
+//     ( 11 ) 退出登录  get   /api/user/passport/logout 无参数
+
+export const reqLogout = () => Ajax.get('/user/passport/logout')
